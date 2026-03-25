@@ -1,15 +1,36 @@
+import java.util.regex.*;
 
 public class WordCounter {
 
-    public int processText(StringBuffer text, String stopword) {
-        Pattern regex = Pattern.compile("your regular expression here");
+    public int processText(StringBuffer text, String stopword) throws InvalidStopwordException, TooSmallText {
+        Pattern regex = Pattern.compile("\\w+");
         Matcher regexMatcher = regex.matcher(text);
+        int count = 0;
+        boolean stopwordFound = false;
+
+
         while (regexMatcher.find()) {
             System.out.println("I just found the word: " + regexMatcher.group());
+
+            if (stopword != null) {
+                if (regexMatcher.find().equals(stopword)) {
+                    stopwordFound = true;
+                    break;
+                }
+            }
+            count++;
         } 
 
         // if stopword was not found, invalidstopwordexception
+        if (stopwordFound == false && stopword != null) {
+            throw new InvalidStopwordException("Stopword not found");
+        }
 
+        if (count < 5) {
+            throw new TooSmallText("Text is less than 5 words");
+        }
+
+        return count;
         // check if count > 5, if not TooSmallText exception
     }
 
