@@ -11,26 +11,26 @@ public class WordCounter {
 
 
         while (regexMatcher.find()) {
-            //System.out.println("I just found the word: " + regexMatcher.group());
             String word = regexMatcher.group();
-            if (stopword != null) {
-                if (word.equals(stopword)) {
-                    stopwordFound = true;
-                    count++;
-                    break;
-                }
+            count++;
+            System.out.println(count);
+            if (stopword != null && word.equals(stopword) && count >= 5) {
+                stopwordFound = true;
+                break;
             }
 
-            count++;
-
         } 
+
+        if (stopword == null) {
+            stopwordFound = true;
+        }
 
         if (count < 5) {
             throw new TooSmallText(count);
         }
 
         // if stopword was not found, invalidstopwordexception
-        if (stopwordFound == false && stopword != null) {
+        if (stopwordFound == false) {
             throw new InvalidStopwordException(stopword);
         }
 
@@ -91,23 +91,16 @@ public class WordCounter {
         String option = null;
         // while loop until option 1 or 2 is chosen
 
-        while (option == null) {
-            if (args.length > 0) {
-                option = args[0];
-            } else {
-                option = inputReader.readLine();
-            }
-            //System.out.println("To process a file, enter 1 or to process text enter 2");
+        while (option == null || (!option.equals("1") && !option.equals("2"))) {
+            System.out.println("To process a file, enter 1 or to process text enter 2");
+            option = inputReader.readLine();
 
-            if (option.equals("1") || option.equals("2")) {
-                break;
-            } 
         }
 
         StringBuffer text = new StringBuffer();
 
         if (option.equals("1")) {
-            String path = inputReader.readLine();
+            String path = args[0];
 
             try {
                 text = processFile(path);
@@ -116,16 +109,12 @@ public class WordCounter {
                 text = new StringBuffer("");
             }
         } else {
-            text = new StringBuffer(inputReader.readLine());
+            text = new StringBuffer(args[0]);
         }
-
-        String stopword;
+        String stopword = null;
         if (args.length > 1) {
             stopword = args[1];
-        } else {
-            stopword = null;
-        }
-
+        } 
         int count = 0;
 
         try {
@@ -134,17 +123,17 @@ public class WordCounter {
         } catch (InvalidStopwordException e) {
             System.out.println(e);
         
-
+        System.out.println("Please provide a new stopword");
         String newStopword = inputReader.readLine();
-        try {
+            try {
             count = 0;
             count = processText(text, newStopword);
             System.out.println("Found " + count + " words.");
-        } catch (InvalidStopwordException a) {
+            } catch (InvalidStopwordException a) {
             System.out.println(a);
-        } catch (TooSmallText b) {
+            } catch (TooSmallText b) {
             System.out.println(b);
-        }
+            }
     } catch (TooSmallText c) {
         System.out.println(c);
     }
