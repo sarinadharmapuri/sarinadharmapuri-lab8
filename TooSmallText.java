@@ -1,8 +1,8 @@
 
 public class TooSmallText extends Exception {
 
-    public TooSmallText(String inputError) {
-        super(inputError);
+    public TooSmallText(int inputError) {
+        super("Only found " + inputError + " words.");
     }
 
 }
